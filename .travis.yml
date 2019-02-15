@@ -1,0 +1,19 @@
+language: java
+dist: trusty
+sudo: false
+
+jdk:
+- oraclejdk9
+- oraclejdk10
+- oraclejdk-ea
+- openjdk10
+- openjdk11
+install: mvn install -DskipTests=true -q
+script: 
+- mvn verify -B -q
+- mvn -Danimal.sniffer.skip=true cobertura:cobertura
+
+after_success: 
+- bash <(curl -s https://codecov.io/bash)
+- ! '[[ $TRAVIS_BRANCH == "master" && $TRAVIS_REPO_SLUG == "toolisticon/jigsaw-by-ap.git"
+    && $TRAVIS_PULL_REQUEST == "false" ]] && { curl https://raw.githubusercontent.com/holisticon/travis-configuration/master/settings.xml --location --create-dirs -o target/travis/settings.xml; }'
